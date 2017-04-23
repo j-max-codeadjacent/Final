@@ -81,7 +81,10 @@ for x in titles:
 	t_text = nltk.Text(tokens)
 	type(t_text)"""
 
+wb = Workbook()
 
+dest_filename = 'novel_data.xlsx'
+ws1 = wb.active
 
 
 
