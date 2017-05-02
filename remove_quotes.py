@@ -116,137 +116,17 @@ start_end = {'adambede': ('Book One', 'SELECTED BIBLIOGRAPHY'),
 }
 
 
-#book = raw_input("What book would you like to analyze?")
-#text_file = texts[book]
-
-
-
-#each entry in authorwords consists of the PG book minus the meta-text.
-authorwords = {}
-for x in titles:
-	book = texts[x]
-	raw_book = open(book, 'r')
-	start_read = start_end[str(x)][0] 
-	end_read = start_end[str(x)][1]
-	book_authorwords = se.rawifier(raw_book, start_read, end_read)
-	book_authorwords = book_authorwords.decode('utf8')
-	authorwords[x]=book_authorwords
-
-
-
-
-def avgsentlength():
-	avsentlength_forXL = {}
-	#title_count = 0
-	for key in title_keys:
-		sent_tokens = nltk.sent_tokenize(authorwords[key])
-		total_length = 0
-		for sentence in sent_tokens:
-			total_length += len(sentence)
-		avg_sent_length = total_length/len(sent_tokens)
-		avsentlength_forXL[key] = avg_sent_length
-	return avsentlength_forXL
-		#print "%r has an average sentence length of %r" %(book, avg_sent_length)
-avsentlength_forXL = avgsentlength()
-#print avsentlength_forXL
-
-def lexicaldiversity():
-	lexdiv_forXL = {}
-	for key in title_keys:
-		book = authorwords[key]
-		tokens = nltk.word_tokenize(book)
-		lex_div = len(tokens)/len(book)
- 		lexdiv_forXL[key] =  lex_div
- 	return lexdiv_forXL
-lexdiv_forXL = lexicaldiversity()
-#print lexdiv_forXL	
-
-wb = Workbook()
-ws1 = wb.active
-ws1.title = 'initialdata'
-ws1.sheet_properties.tabColor = "ffa500"
-
-ws1.cell(row=1, column=1).value = 'author'
-ws1.cell(row=1, column=2).value = 'title'
-ws1.cell(row=1, column=3).value = 'pub_date'
-ws1.cell(row=1, column=4).value = 'avg_sent_length'
-ws1.cell(row=1, column=5).value = 'lexical_diversity'
-
-#creates the row headings
-entry = 2
-while entry <= (len(titles)+1): #thought I needed to add +1 to account for starting at entry 2
-	for key in title_keys:
-		ws1.cell(row=entry, column=1).value = titles[key][0]
-		ws1.cell(row=entry, column=2).value = key
-		ws1.cell(row=entry, column=3).value = titles[key][1]
-		entry += 1
-
-#creates the avsentlength_forXL column
-
-entry = 2
-while entry <= (len(title_keys)+1): #thought I needed to add +1 to account for starting at entry 2
-	for key in title_keys:
-		ws1.cell(row=entry, column=4).value = avsentlength_forXL[key]
-		entry += 1
-
-entry = 2
-while entry <= (len(title_keys)+1): #thought I needed to add +1 to account for starting at entry 2
-	for key in title_keys:
-		ws1.cell(row=entry, column=5).value = lexdiv_forXL[key]
-		entry += 1
-
-entry = 2
-while entry <= (len(title_keys)+1): #thought I needed to add +1 to account for starting at entry 2
-	for key in title_keys:
-		ws1.cell(row=entry, column=6).value = "Elvis"
-		entry += 1
-
-wb.save('novel_data.xlsx')
-
-
-
-#testing creating data frame objects for each book, starting with Adam Bede.
-def sentences_forDF(title):
-	sent_tokens = nltk.sent_tokenize(authorwords[title])
-	print type(sent_tokens)
-	return sent_tokens	
-#title = raw_input("What book would you like to analyze?: %r" %title_keys) 
-#sentences_forDF = sentences_forDF(title)
-
-def lowercasesentences_forDF():
-	lc_sentences = []
-	for sent in sentences_forDF:
-		lc_sent = sent.lower()
-		lc_sentences.append(lc_sent)
-	print lc_sentences[2]	
-	return lc_sentences
-#lowercasesentences_forDF = lowercasesentences_forDF()
-#Average sentence length includes white spaces and punctuation, including quotation marks.
-def sentencelengths_forDF():
-	sentence_lengths = []
-	for x in sentences_forDF:
-		sentence_lengths.append(len(x)) 			
- 	return sentence_lengths
-#sentencelengths_forDF = sentencelengths_forDF()
-
-
-def lexdiversity_forDF(title):
-	tokens = nltk.word_tokenize(title)
-	lexdiv_forDF = len(tokens)/len(book)
- 	return lexdiv_forDF
-
-
-"""df = pd.DataFrame.from_records({"Sentences": sentences_forDF,
- "Lower Case Sentences": lowercasesentences_forDF,
- "Sentence Lengths": sentencelengths_forDF,
- })
-print df.head()
-labels = ("Sentence Length")
-df = pd.DataFrame(lexdiversity_forDF, 
-	avgsentlength_forDF, 
-	sentences_forDF, 
-	lowercasesentences_forDF, 
-	)
-print df.head()
-print df.tail()
-"""
+for key in title_keys:
+	book = texts[key]
+	book = open(book,'r')
+	read_book = book.readlines()
+	book.close()
+	book_lines = []
+	for line in read_book:
+		line = line.replace('“','').replace('”','')
+		book_lines.append(line)
+	book = texts[key]
+	book = open(book,'w')
+	for line in book_lines:
+		book.write(line)
+	book.close()
