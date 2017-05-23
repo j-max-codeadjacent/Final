@@ -1,0 +1,107 @@
+Sentence ID project
+	
+	Importing the text
+		-40 books, each from a different author on Project Gutenberg. 
+			-Saved them as text files on my computer. 
+			-They are UTF-8 encoded. I didn't use the ones in ascii.
+			-I have a set of dictionaries that run through the files via a list of title keys.  
+			-treat them as entire books
+				-each book's text is a row in a dataframe column.
+			-treat the individual sentences.
+				-each sentence is a row in a dataframe column.
+				Use dummy variables to see whether a sentence was a given author.
+					i.e., columns with each author either 1 or 0.
+						make one column author (to account for future books by the author), one column book, one column sentence.
+							when I do this, I will inevitably run into the problem of the odd sentence tokenization.
+									could perhaps use string.whitespace to take out the long strings of whitespace, through I don't know what it really does.
+
+	Feature Creation
+		Sentence length
+			using the df.corr(), there is a correlation of .38 between sentence length and semicolons, which makes sense.
+		Punctuation	
+			number of periods, 
+			qmarks, 
+			ex points, 
+			semicolons, 
+			colons
+		Words per sentence.
+			****aw_nopuntest.py
+
+	Analysis techniques
+		Decision tree
+			(left yes, right no)
+			
+			Basic python tree
+				Is the sentence present in a text? 
+					####There is something wrong with the search.
+						I think it has to do with the line breaks.
+				Does the sentence have one of the most unique words?/set of words?
+					create a dummy variable with whether the unique word is in the text.
+
+			> use a continuous decision tree
+				> continuous uses the mean for the decision
+				> the input sentence does not have a yes/no, so it isn't categorical, it is based on how similar a sentence is to the author sentences. 
+					>(https://www.analyticsvidhya.com/blog/2016/04/complete-tutorial-tree-based-modeling-scratch-in-python/#one
+		
+			>use a categorical decision tree
+				>categorical decision tree uses the mode as the classifier.
+				>the decision tree gives an output of which author is most likely; it categorizes the sentence as an author.
+
+
+			>>>from sklearn.tree import DecisionTreeClassifier)
+				(max_depth = 2 ---> means number of decisions to go down[?] i.e. ex_point/sentence length).
+				>>>model.fit(X,y)
+					>>>X = df[predictors]
+					>>>y = df['label'], i.e. which book/author
+						-wrote a program-- aq_smlsentences.py--which runs all the sentences through the decision tree for each author and populates an excel sheet with the model.feature_importances.
+						-the predictors are sentence length, question mark, exclamation point, colon, semi colon,
+							I think this tells me whether certain punctuation is important for an author.
+							sentence length
+								sentence length classifier
+									short
+									medium
+									long
+						I need to put in tone and subject.
+			
+			Random Forest Tree?
+
+		Based on books
+			Lexical diversity
+				Lexical diversity using the nltk Snowball stemmer. 	
+					There is an odd relationship between lex d and sentence length.
+						****aq_ldvslen.py
+						It sort of looks like a decreasing exponential function.
+							To help answer what true lexical diversity is,  it seems as though one must look at texts of similar lengths.
+							It would make sense that lexical diversity would go down with longer texts, since themes would be repeated.
+				average word length
+					????running into the utf-8 ascii problem.  Want to strip all punctuation but can't.
+			
+			Punctuation counts
+				Commas
+				Exclamations
+				Questions
+			Parts of Speech
+				http://www.nltk.org/book/ch05.html
+
+
+
+
+	Subject Analysis
+		top down subject analysis
+			10 chosen topics 
+				religion, sex, food, politics, friendship, sports, science, 
+			tone
+				sad, happy, angry, excited
+					Linguistic Inquiry Word Count(LIWC)
+						lesson 13, (pg 55)
+		Bottom Up Analysis
+			latent dirichlet allocation
+
+	Fit
+		tf_idf
+
+				#this turns the text into individual letters, which I'm not sure how to handle.
+					#if I use list(text[0]), where text is the stemmed words, all of the letters appear.
+
+Train the Data on the first percentage of the author’s words.
+Sentence length vs number of words.
